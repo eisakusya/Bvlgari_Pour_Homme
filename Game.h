@@ -16,7 +16,9 @@ public:
 	void move(char direct);
 	bool canMove();
 	bool gameover();
-
+	void print();
+	
+	int getElement(int row, int col);
 };
 
 #endif // !GAME_H

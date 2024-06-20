@@ -1,9 +1,10 @@
-#include "pch.h"
+#include"pch.h"
 #include "Game.h"
 #include<array>
 #include<cstdlib>
 #include<ctime>
 #include<vector>
+#include<iostream>
 
 Game::Game()
 {
@@ -78,12 +79,13 @@ void Game::move(char direct)
 				}
 			}
 		}
+		break;
 	case 's':
 		//- move downward
 		for (col = 0; col < GRID_SIZE; ++col) {
 			//- eliminate zero grid
 			writePos = GRID_SIZE - 1;
-			for (row = GRID_SIZE - 1; row > 0; --row) {
+			for (row = GRID_SIZE - 1; row >= 0; --row) {
 				if (grid[row][col] != 0) {
 					if (writePos != row) {
 						grid[writePos][col] = grid[row][col];
@@ -101,7 +103,7 @@ void Game::move(char direct)
 			}
 			//- eliminate zero grid again
 			writePos = GRID_SIZE - 1;
-			for (row = GRID_SIZE - 1; row > 0; --row) {
+			for (row = GRID_SIZE - 1; row >= 0; --row) {
 				if (grid[row][col] != 0) {
 					if (writePos != row) {
 						grid[writePos][col] = grid[row][col];
@@ -111,6 +113,7 @@ void Game::move(char direct)
 				}
 			}
 		}
+		break;
 	case 'a':
 		//- move leftward
 		for (row = 0; row < GRID_SIZE; ++row) {
@@ -144,12 +147,13 @@ void Game::move(char direct)
 				}
 			}
 		}
+		break;
 	case 'd':
 		//- move rightward
 		for (row = 0; row < GRID_SIZE; ++row) {
 			//- eliminate zero grid
 			writePos = GRID_SIZE - 1;
-			for (col = GRID_SIZE - 1; col > 0; --col) {
+			for (col = GRID_SIZE - 1; col >= 0; --col) {
 				if (grid[row][col] != 0) {
 					if (writePos != col) {
 						grid[row][writePos] = grid[row][col];
@@ -167,7 +171,7 @@ void Game::move(char direct)
 			}
 			//- eliminate zero grid again
 			writePos = GRID_SIZE - 1;
-			for (col = GRID_SIZE - 1; col > 0; --col) {
+			for (col = GRID_SIZE - 1; col >= 0; --col) {
 				if (grid[row][col] != 0) {
 					if (writePos != col) {
 						grid[row][writePos] = grid[row][col];
@@ -177,6 +181,7 @@ void Game::move(char direct)
 				}
 			}
 		}
+		break;
 	default:
 		break;
 	}
@@ -194,19 +199,20 @@ bool Game::canMove()
 		}
 	}
 	//- no empty grid
-	bool flag = false;
 	std::array<std::array<int, GRID_SIZE>, GRID_SIZE> pre = grid;
-	if (emptyGrid.empty()) {
-		char directions[4] = { 'w','a','s','d' };
-		for (char direction : directions) {
-			this->move(direction);
-			//- there is still way to move
-			if (grid != pre) flag = true;
+	if (!emptyGrid.empty()) {
+		return true;
+	}
+	char directions[4] = { 'w','a','s','d' };
+	for (char direction : directions) {
+		this->move(direction);
+		//- there is still way to move
+		if (grid != pre) {
 			grid = pre;
+			return true;
 		}
 	}
-
-	return flag;
+	return false;
 }
 
 bool Game::gameover()
@@ -224,5 +230,30 @@ bool Game::gameover()
 	//- no next move
 	over = !canMove();
 	return over;
+}
+
+void Game::print()
+{
+	for (auto row : grid) {
+		for (int unit : row) {
+			std::cout << unit << " ";
+		}
+
+		std::cout << std::endl;
+	}
+}
+
+int Game::getElement(int row, int col)
+{
+	try {
+		if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) {
+			throw std::out_of_range("Index out of range");
+		}
+		return grid[row][col];
+	}
+	catch (const std::out_of_range& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		return -1;
+	}
 }
 
