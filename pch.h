@@ -23,6 +23,19 @@
 #include "acdocman.h"
 #include "acarray.h"
 #include "adscodes.h"
+#include "dbapserv.h"
+#include "dbxrecrd.h"
+#include <iostream>
+#include <string>
+#include "dbproxy.h"
+#include "dbidmap.h"
+#include "dbcfilrs.h"
+#include "AcGraph.h"
+#include <array>
+#include "gamedrawer.h"
+#include <cmath> 
+#include <dbjig.h>
+#include "gamejig.h"
 
 #define cmd_group_name _T("Game2048")
 
