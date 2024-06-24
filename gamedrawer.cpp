@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "gamedrawer.h"
-#include "Block.h"
 //----------------------------------------------------------------------------
 Adesk::UInt32 GameDrawer::kCurrentVersionNumber = 1 ;
 
@@ -21,8 +20,11 @@ GameDrawer::GameDrawer() {
 	gridSize = 4;
 	m_center.set(500, 500, 0);
 	m_len = length / gridSize;
-	updataSpArraay();
-	updateRectangles();
+	updataLocation();
+	for (int i = 0; i < 16; i++) {
+		rectangles[i].m_realNum = i;
+	}
+	//updataArray();
 	initText();
 }
 
@@ -32,8 +34,10 @@ GameDrawer::GameDrawer(int num, AcGePoint3d center, const double len, const int 
 	gridSize = grid;
 	startPoint.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 	m_len = length / gridSize;
-	updataSpArraay();
-	updateRectangles();
+	updataLocation();
+	for (int i = 0; i < 16; i++) {
+		rectangles[i].m_realNum = i;
+	}
 	initText();
 }
 
@@ -219,15 +223,27 @@ double GameDrawer::getGridsize() const {
 	return gridSize;
 }
 
-Acad::ErrorStatus GameDrawer::updataSpArraay()
+Acad::ErrorStatus GameDrawer::updataLocation()
 {
 	int num = 0;
 	for (int i = 0; i < COLUMN; i++) {
 		for (int j = 0; j < ROW; j++) {
 			AcGePoint3d st;
-			st.set(startPoint.x + i * m_len, startPoint.y + j * m_len, startPoint.z);
+			st.set(startPoint.x + j * m_len, startPoint.y + i * m_len, startPoint.z);
 			rectangles[num].sPoint = st;
 			num = num + 1;
+		}
+	}
+	for (int i = 0; i < 16; i++) {
+		int dir[][2] = { {0, 0}, {1, 0}, {1, 1}, {0, 1} };
+		rectangles[i].m_points[0] = rectangles[i].sPoint;
+		//acutPrintf(_T("\n rectangles[i].sPoint:%f,%f,%f"), rectangles[i].sPoint.x, rectangles[i].sPoint.y, rectangles[i].sPoint.z);
+		AcGePoint3d startP = rectangles[i].m_points[0];
+		for (int j = 0; j < rectangles[i].m_ptNum; j++) {
+			rectangles[i].m_points[j].x = startP.x + m_len * dir[j][0];
+			rectangles[i].m_points[j].y = startP.y + m_len * dir[j][1];
+			rectangles[i].m_points[j].z = startP.z;
+			//acutPrintf(_T("\nRecPoint:%f,%f,%f"), rectangles[i].m_points[j].x, rectangles[i].m_points[j].y, rectangles[i].m_points[j].z);
 		}
 	}
 	return Acad::eOk;
@@ -306,6 +322,7 @@ Acad::ErrorStatus GameDrawer::subMoveGripPointsAt(
 		setCenter(temp);
 		break;
 	}
+	
 	return Acad::eOk;
 }
 
@@ -323,8 +340,7 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	AcGePoint3d start;
 	start.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 	setStart(start);
-	updataSpArraay();
-	updateRectangles();
+	updataLocation();
 	initText();
 	for (int i = 0; i <= gridSize; ++i) {
 		// vertical line
@@ -352,23 +368,13 @@ Adesk::UInt32 GameDrawer::subSetAttributes(AcGiDrawableTraits * traits) {
 	return (AcDbEntity::subSetAttributes(traits));
 }
 
-void GameDrawer::updateRectangles() //根据起点更新点阵坐标
+void GameDrawer::updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray) //根据起点更新点阵坐标
 {
-
 	for (int i = 0; i < 16; i++) {
-		int dir[][2] = { {0, 0}, {1, 0}, {1, 1}, {0, 1} };
-		rectangles[i].m_points[0] = rectangles[i].sPoint;
-		//acutPrintf(_T("\n rectangles[i].sPoint:%f,%f,%f"), rectangles[i].sPoint.x, rectangles[i].sPoint.y, rectangles[i].sPoint.z);
-		AcGePoint3d startP = rectangles[i].m_points[0];
-		for (int j = 0; j < rectangles[i].m_ptNum; j++) {
-			rectangles[i].m_points[j].x = startP.x + m_len * dir[j][0];
-			rectangles[i].m_points[j].y = startP.y + m_len * dir[j][1];
-			rectangles[i].m_points[j].z = startP.z;
-			//acutPrintf(_T("\nRecPoint:%f,%f,%f"), rectangles[i].m_points[j].x, rectangles[i].m_points[j].y, rectangles[i].m_points[j].z);
-		}
-		rectangles[i].m_realNum = i;
+		rectangles[i].m_realNum = dataArray[3 - i / gridSize][i % gridSize];
 	}
-	//acutPrintf(_T("\nupdateRectangles"));
+	initText();
+	recordGraphicsModified();
 }
 
 void GameDrawer::initText() {
@@ -405,21 +411,21 @@ void GameDrawer::initText() {
 	}
 }
 
-void GameDrawer::moveBlock(AcGePoint3d stPoint, int size) //移动（棋盘发生大小的改变），调用的函数
-{
-	for (int i = 0; i < 16; i++) {
-		m_len = size;  //更新大小
-		updateRectangles();  //更新点的坐标
-		initText();  //更新文本的位置
-	}
-	
-}
-
-void GameDrawer::updateBlock() //玩家使用WSAD时调用的函数
-{
-	for (int i = 0; i < 16; i++) {
-		rectangles[i].m_realNum = 0;  //更新真实值
-		initText();  //更新文本的位置
-	}
-	
-}
+//void gamedrawer::moveBlock(AcGePoint3d stPoint, int size) //移动（棋盘发生大小的改变），调用的函数
+//{
+//	for (int i = 0; i < 16; i++) {
+//		m_len = size;  //更新大小
+//		//updataArray();  //更新点的坐标
+//		initText();  //更新文本的位置
+//	}
+//	
+//}
+//
+//void gamedrawer::updateBlock() //玩家使用WSAD时调用的函数
+//{
+//	for (int i = 0; i < 16; i++) {
+//		rectangles[i].m_realNum = 0;  //更新真实值
+//		initText();  //更新文本的位置
+//	}
+//	
+//}

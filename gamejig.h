@@ -3,8 +3,8 @@
 #pragma once
 class GameDrawer;
 //-----------------------------------------------------------------------------
-class GameJig : public AcEdJig {
-
+class Gamejig : public AcEdJig {
+	
 private:
 	//- Member variables
 	//- current input level, increment for each input
@@ -19,8 +19,8 @@ public:
 	GameDrawer *mpEntity ;
 
 public:
-	GameJig () ;
-	~GameJig () ;
+	Gamejig () ;
+	~Gamejig () ;
 
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
 	AcEdJig::DragStatus startJig (GameDrawer *pEntityToJig) ;

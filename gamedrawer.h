@@ -4,7 +4,6 @@
 #define COLUMN 4
 #define ROW 4
 #include "pch.h"
-#include "Block.h"
 enum PartialUndoCode {
 	kCenter = 1,
 	kLength = 2,
@@ -56,7 +55,7 @@ public:
 	virtual Acad::ErrorStatus setLength(double len);
 	virtual double getLength() const;
 	virtual double getGridsize() const;
-	virtual Acad::ErrorStatus updataSpArraay();
+	virtual Acad::ErrorStatus updataLocation();
 	
 	
 	//----- Graphics protocol
@@ -84,10 +83,10 @@ private:
 	AcGePoint3d sPArray[(COLUMN*ROW)];
 	
 public:
-	void updateRectangles();
+	void updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray);
 	void initText();
-	void moveBlock(AcGePoint3d stPoint, int size);
-	void updateBlock();
+	/*void moveBlock(AcGePoint3d stPoint, int size);
+	void updateBlock();*/
 };
 
 #endif

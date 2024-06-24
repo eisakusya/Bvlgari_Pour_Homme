@@ -5,9 +5,18 @@
 #include<ctime>
 #include<vector>
 #include<iostream>
+#include<fstream>
 
 Game::Game()
 {
+	score = 0;
+	//- read score record
+	std::ifstream gameFile;
+	gameFile.open("ScoreRecord.bat");
+	gameFile >> highestScore;
+	gameFile.close();
+
+	//- initialize grid
 	for (auto& row : grid) {
 		row.fill(0);
 	}
@@ -43,7 +52,7 @@ void Game::generate()
 
 void Game::move(char direct)
 {
-	int row, col, writePos = 0;
+	int row, col, writePos, addition = 0;
 	switch (direct)
 	{
 	case 'w':
@@ -64,6 +73,7 @@ void Game::move(char direct)
 			for (row = 0; row < GRID_SIZE - 1; ++row) {
 				if (grid[row][col] != 0 && grid[row][col] == grid[row + 1][col]) {
 					grid[row][col] *= 2;
+					addition = grid[row][col];
 					grid[row + 1][col] = 0;
 				}
 			}
@@ -98,6 +108,7 @@ void Game::move(char direct)
 			for (row = GRID_SIZE - 1; row > 0; --row) {
 				if (grid[row][col] != 0 && grid[row][col] == grid[row - 1][col]) {
 					grid[row][col] *= 2;
+					addition = grid[row][col];
 					grid[row - 1][col] = 0;
 				}
 			}
@@ -132,6 +143,7 @@ void Game::move(char direct)
 			for (col = 0; col < GRID_SIZE - 1; ++col) {
 				if (grid[row][col] != 0 && grid[row][col] == grid[row][col + 1]) {
 					grid[row][col] *= 2;
+					addition = grid[row][col];
 					grid[row][col + 1] = 0;
 				}
 			}
@@ -164,9 +176,10 @@ void Game::move(char direct)
 			}
 			//- emerge
 			for (col = GRID_SIZE - 1; col > 0; --col) {
-				if (grid[row][col] != 0 && grid[row][col] == grid[row][col-1]) {
+				if (grid[row][col] != 0 && grid[row][col] == grid[row][col - 1]) {
 					grid[row][col] *= 2;
-					grid[row][col-1] = 0;
+					addition = grid[row][col];
+					grid[row][col - 1] = 0;
 				}
 			}
 			//- eliminate zero grid again
@@ -185,6 +198,7 @@ void Game::move(char direct)
 	default:
 		break;
 	}
+	score += addition;
 }
 
 bool Game::canMove()
@@ -221,7 +235,7 @@ bool Game::gameover()
 	//- 2048 has been generated
 	for (auto row : grid) {
 		for (auto unit : row) {
-			if (unit==2048)
+			if (unit == 2048)
 			{
 				over = true;
 			}
@@ -229,6 +243,14 @@ bool Game::gameover()
 	}
 	//- no next move
 	over = !canMove();
+
+	if ((over)&&(score > highestScore)) {
+		highestScore = score;
+		std::ofstream gameFile;
+		gameFile.open("ScoreRecord.bat", std::ios::out);
+		gameFile << highestScore << std::endl;
+		gameFile.close();
+	}
 	return over;
 }
 
@@ -260,5 +282,10 @@ int Game::getElement(int row, int col)
 std::array<std::array<int, GRID_SIZE>, GRID_SIZE> Game::getGridCopy()
 {
 	return grid;
+}
+
+int Game::getScore()
+{
+	return score;
 }
 

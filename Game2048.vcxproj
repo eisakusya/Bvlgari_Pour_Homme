@@ -193,7 +193,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="gamedrawer.cpp" />
     <ClCompile Include="gamejig.cpp" />
@@ -209,11 +208,11 @@
     <ClCompile Include="Game2048.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\Game2048.rc2" />
     <None Include="Game2048.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Block.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="gamedrawer.h" />

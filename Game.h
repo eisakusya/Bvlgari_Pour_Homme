@@ -8,6 +8,8 @@ class Game
 {
 private:
 	std::array<std::array<int, GRID_SIZE>, GRID_SIZE> grid;
+	int score;
+	int highestScore;
 
 public:
 	Game();
@@ -18,7 +20,12 @@ public:
 	bool gameover();
 	void print();
 	
+	//- method to get grid
 	int getElement(int row, int col);
+	std::array<std::array<int, GRID_SIZE>, GRID_SIZE> getGridCopy();
+
+	//- method to access score
+	int getScore();
 };
 
 #endif // !GAME_H
