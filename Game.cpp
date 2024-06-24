@@ -7,14 +7,15 @@
 #include<iostream>
 #include<fstream>
 
-Game::Game()
+Game::Game() :score(0), highestScore(0)
 {
-	score = 0;
 	//- read score record
 	std::ifstream gameFile;
-	gameFile.open("ScoreRecord.bat");
-	gameFile >> highestScore;
-	gameFile.close();
+	gameFile.open(FILE_DIRECTORY);
+	if (gameFile.is_open()) {
+		gameFile >> highestScore;
+		gameFile.close();
+	}
 
 	//- initialize grid
 	for (auto& row : grid) {
@@ -244,12 +245,14 @@ bool Game::gameover()
 	//- no next move
 	over = !canMove();
 
-	if ((over)&&(score > highestScore)) {
+	if ((over) && (score > highestScore)) {
 		highestScore = score;
 		std::ofstream gameFile;
-		gameFile.open("ScoreRecord.bat", std::ios::out);
-		gameFile << highestScore << std::endl;
-		gameFile.close();
+		gameFile.open(FILE_DIRECTORY, std::ios::out);
+		if (gameFile.is_open()) {
+			gameFile << highestScore << std::endl;
+			gameFile.close();
+		}
 	}
 	return over;
 }
@@ -287,5 +290,10 @@ std::array<std::array<int, GRID_SIZE>, GRID_SIZE> Game::getGridCopy()
 int Game::getScore()
 {
 	return score;
+}
+
+int Game::getRecordScore()
+{
+	return highestScore;
 }
 

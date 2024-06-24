@@ -4,6 +4,7 @@
 #define GAME_H
 
 #define GRID_SIZE 4
+#define FILE_DIRECTORY "ScoreRecord.dat"
 class Game
 {
 private:
@@ -26,6 +27,7 @@ public:
 
 	//- method to access score
 	int getScore();
+	int getRecordScore();
 };
 
 #endif // !GAME_H
