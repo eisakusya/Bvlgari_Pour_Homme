@@ -193,8 +193,11 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="gameUnitTest.cpp" />
+    <ClCompile Include="gamedrawer.cpp" />
+    <ClCompile Include="gamejig.cpp" />
+    <ClCompile Include="Implementation.cpp" />
     <ClCompile Include="rxentrypoint.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -210,8 +213,12 @@
     <None Include="Game2048.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="gamedrawer.h" />
+    <ClInclude Include="gamejig.h" />
+    <ClInclude Include="Implementation.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="helloworld.h" />
     <ClInclude Include="Resource.h" />

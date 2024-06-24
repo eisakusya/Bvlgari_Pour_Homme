@@ -1,7 +1,7 @@
 #ifndef GAMEJIG_H
 #define GAMEJIG_H
 #pragma once
-class gamedrawer;
+class GameDrawer;
 //-----------------------------------------------------------------------------
 class gamejig : public AcEdJig {
 
@@ -16,14 +16,14 @@ public:
 	//- Array of input points, each level corresponds to the mCurrentInputLevel
 	AcGePoint3dArray mInputPoints ;
 	//- Entity being jigged
-	gamedrawer *mpEntity ;
+	GameDrawer *mpEntity ;
 
 public:
 	gamejig () ;
 	~gamejig () ;
 
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
-	AcEdJig::DragStatus startJig (gamedrawer *pEntityToJig) ;
+	AcEdJig::DragStatus startJig (GameDrawer *pEntityToJig) ;
 
 protected:
 	//- AcEdJig overrides

@@ -6,16 +6,24 @@
 #include "acestext.h"
 #include "acedads.h"
 #include "helloworld.h"
+#include "Implementation.h"
+#include "gamedrawer.h"
 
 
 void initapp()
 {
 	acedRegCmds->addCommand(cmd_group_name, _T("helloworld"), _T("helloworld"), ACRX_CMD_MODAL, helloworld);
+	//- 2048
+	acedRegCmds->addCommand(cmd_group_name, _T("2048STRAT"), _T("2048STRAT"), ACRX_CMD_MODAL, myGame);
+
+	GameDrawer::rxInit();
+	acrxBuildClassHierarchy();
 }
 
 void unloadapp()
 {
 	acedRegCmds->removeGroup(cmd_group_name);
+	deleteZcRxClass(GameDrawer::desc());
 }
 
 

@@ -9,18 +9,18 @@ enum PartialUndoCode {
 	kLength = 2,
 };
 
-class gamedrawer : public AcDbEntity
+class GameDrawer : public AcDbEntity
 {
 public:
-	ACRX_DECLARE_MEMBERS(gamedrawer);
+	ACRX_DECLARE_MEMBERS(GameDrawer);
 
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber;
 
 public:
-	gamedrawer();
-	gamedrawer(const std::array<std::array<int, COLUMN>, ROW>& data,const AcGePoint3d& center = { 500,500,0 }, const double len = 1000, const int grid = 4);
-	virtual ~gamedrawer();
+	GameDrawer();
+	GameDrawer(const std::array<std::array<int, COLUMN>, ROW>& data,const AcGePoint3d& center = { 500,500,0 }, const double len = 1000, const int grid = 4);
+	virtual ~GameDrawer();
 
 	//----- AcDbObject protocols
 	//---- Dwg Filing protocol

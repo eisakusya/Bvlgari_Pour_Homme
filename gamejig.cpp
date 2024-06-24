@@ -9,7 +9,7 @@ gamejig::gamejig () : AcEdJig (),
 gamejig::~gamejig () { }
 
 //-----------------------------------------------------------------------------
-AcEdJig::DragStatus gamejig::startJig (gamedrawer *pEntity) {
+AcEdJig::DragStatus gamejig::startJig (GameDrawer *pEntity) {
 	//- Store the new entity pointer
 	mpEntity = pEntity ;
 	//- Setup each input prompt

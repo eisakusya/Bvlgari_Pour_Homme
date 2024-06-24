@@ -2,12 +2,12 @@
 #include "gamedrawer.h"
 
 //----------------------------------------------------------------------------
-Adesk::UInt32 gamedrawer::kCurrentVersionNumber = 1 ;
+Adesk::UInt32 GameDrawer::kCurrentVersionNumber = 1 ;
 
 //----------------------------------------------------------------------------
 //---- runtime definition
 ACRX_DXF_DEFINE_MEMBERS (
-	gamedrawer, AcDbEntity,
+	GameDrawer, AcDbEntity,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
 	AcDbProxyEntity::kNoOperation, GAMEDRAWER, GAMEDRAWERAPP
 )
@@ -15,7 +15,7 @@ ACRX_DXF_DEFINE_MEMBERS (
 //----------------------------------------------------------------------------
 //---- construct & destruct
 
-gamedrawer::gamedrawer(){
+GameDrawer::GameDrawer(){
 	dataArray = { 0 };
 	length = 1000;
 	startPoint = { 0,0,0 };
@@ -23,7 +23,7 @@ gamedrawer::gamedrawer(){
 	m_center.set(500,500,0);
 }
 
-gamedrawer::gamedrawer(const std::array<std::array<int, COLUMN>, ROW>& data,const AcGePoint3d& center, const double len, const int grid) {
+GameDrawer::GameDrawer(const std::array<std::array<int, COLUMN>, ROW>& data,const AcGePoint3d& center, const double len, const int grid) {
 	dataArray = data;
 	length = len;
 	m_center = center;
@@ -31,17 +31,17 @@ gamedrawer::gamedrawer(const std::array<std::array<int, COLUMN>, ROW>& data,cons
 	startPoint.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 }
 
-gamedrawer::~gamedrawer(){}
+GameDrawer::~GameDrawer(){}
 
 //----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //---- Dwg Filing protocol
-Acad::ErrorStatus gamedrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
+Acad::ErrorStatus GameDrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	assertReadEnabled ();
 	Acad::ErrorStatus es = AcDbEntity::dwgOutFields(pFiler);
 	if (es != Acad::eOk)
 		return (es);
-	if ((es = pFiler->writeUInt32(gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+	if ((es = pFiler->writeUInt32(GameDrawer::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
 	//.....
@@ -52,7 +52,7 @@ Acad::ErrorStatus gamedrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	return (pFiler->filerStatus());
 }
 
-Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
+Acad::ErrorStatus GameDrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	assertWriteEnabled();
 	Acad::ErrorStatus es = AcDbEntity::dwgInFields(pFiler);
 	if (es != Acad::eOk)
@@ -60,7 +60,7 @@ Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	Adesk::UInt32 version = 0;
 	if ((es = pFiler->readUInt32(&version)) != Acad::eOk)
 		return (es);
-	if (version > gamedrawer::kCurrentVersionNumber)
+	if (version > GameDrawer::kCurrentVersionNumber)
 		return (Acad::eMakeMeProxy);
 	//if ( version < gamedrawer::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
@@ -73,7 +73,7 @@ Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	return (pFiler->filerStatus());
 }
 
-Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
+Acad::ErrorStatus GameDrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 	assertReadEnabled();
 	//----- Save parent class information first.
 	Acad::ErrorStatus es = AcDbEntity::dxfOutFields(pFiler);
@@ -83,7 +83,7 @@ Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 	if (es != Acad::eOk)
 		return (es);
 	//----- Object version number needs to be saved first
-	if ((es = pFiler->writeUInt32(AcDb::kDxfInt32, gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+	if ((es = pFiler->writeUInt32(AcDb::kDxfInt32, GameDrawer::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
 	//.....
@@ -91,7 +91,7 @@ Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 	return (pFiler->filerStatus());
 }
 
-Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
+Acad::ErrorStatus GameDrawer::dxfInFields(AcDbDxfFiler *pFiler) {
 	assertWriteEnabled();
 	//----- Read parent class information first.
 	Acad::ErrorStatus es = AcDbEntity::dxfInFields(pFiler);
@@ -106,7 +106,7 @@ Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
 		return (pFiler->filerStatus());
 	}
 	Adesk::UInt32 version = (Adesk::UInt32)rb.resval.rlong;
-	if (version > gamedrawer::kCurrentVersionNumber)
+	if (version > GameDrawer::kCurrentVersionNumber)
 		return (Acad::eMakeMeProxy);
 
 	//----- Read params in non order dependant manner
@@ -138,9 +138,9 @@ Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
 }
 
 
-Acad::ErrorStatus gamedrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClass* classObj)
+Acad::ErrorStatus GameDrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClass* classObj)
 {
-	if (classObj != gamedrawer::desc())
+	if (classObj != GameDrawer::desc())
 		return AcDbEntity::applyPartialUndo(undoFiler, classObj);
 	Adesk::Int16 shortCode;
 	undoFiler->readItem(&shortCode);
@@ -168,51 +168,51 @@ Acad::ErrorStatus gamedrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClas
 //----------------------------------------------------------------------------
 //----- AcDbEntity protocols
 
-Acad::ErrorStatus gamedrawer::setStart(AcGePoint3d& start) {
+Acad::ErrorStatus GameDrawer::setStart(AcGePoint3d& start) {
 	startPoint = start;
 	return Acad::eOk;
 }
-AcGePoint3d gamedrawer::getStartpoint() const {
+AcGePoint3d GameDrawer::getStartpoint() const {
 	return startPoint;
 }
 
-Acad::ErrorStatus gamedrawer::setCenter(AcGePoint3d& center) {
+Acad::ErrorStatus GameDrawer::setCenter(AcGePoint3d& center) {
 	assertWriteEnabled(false);
 	AcDbDwgFiler *pFiler = NULL;
 	if ((pFiler = undoFiler()) != NULL) {
-		undoFiler()->writeAddress(gamedrawer::desc());
+		undoFiler()->writeAddress(GameDrawer::desc());
 		undoFiler()->writeItem((Adesk::Int16)kCenter);
 		undoFiler()->writePoint3d(m_center);
 	}
 	m_center = center;
 	return Acad::eOk;
 }
-AcGePoint3d gamedrawer::getCenter() const {
+AcGePoint3d GameDrawer::getCenter() const {
 	assertReadEnabled();
 	return m_center;
 }
 
-Acad::ErrorStatus gamedrawer::setLength(double len) {
+Acad::ErrorStatus GameDrawer::setLength(double len) {
 	assertWriteEnabled(false);
 	AcDbDwgFiler *pFiler = NULL;
 	if ((pFiler = undoFiler()) != NULL) {
-		undoFiler()->writeAddress(gamedrawer::desc());
+		undoFiler()->writeAddress(GameDrawer::desc());
 		undoFiler()->writeItem((Adesk::Int16)kLength);
 		undoFiler()->writeDouble(length);
 	}
 	length = len;
 	return Acad::eOk;
 }
-double gamedrawer::getLength() const {
+double GameDrawer::getLength() const {
 	assertReadEnabled();
 	return length;
 }
 
-double gamedrawer::getGridsize() const {
+double GameDrawer::getGridsize() const {
 	return gridSize;
 }
 
-Acad::ErrorStatus gamedrawer::setdataArray(std::array<std::array<int, COLUMN>, ROW>& data) {
+Acad::ErrorStatus GameDrawer::setdataArray(std::array<std::array<int, COLUMN>, ROW>& data) {
 	dataArray = data;
 	return Acad::eOk;
 }
@@ -221,7 +221,7 @@ Acad::ErrorStatus gamedrawer::setdataArray(std::array<std::array<int, COLUMN>, R
 //----- Graphics protocols
 
 
-Acad::ErrorStatus gamedrawer::subGetGripPoints(
+Acad::ErrorStatus GameDrawer::subGetGripPoints(
 	AcGePoint3dArray &gripPoints,
 	AcDbIntArray &osnapModes,
 	AcDbIntArray &geomIds) const
@@ -246,7 +246,7 @@ Acad::ErrorStatus gamedrawer::subGetGripPoints(
 	return Acad::eOk;
 }
 
-Acad::ErrorStatus gamedrawer::subMoveGripPointsAt(
+Acad::ErrorStatus GameDrawer::subMoveGripPointsAt(
 	const AcDbIntArray &indices,
 	const AcGeVector3d &offset)
 {
@@ -296,7 +296,7 @@ Acad::ErrorStatus gamedrawer::subMoveGripPointsAt(
 
 
 
-Adesk::Boolean gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
+Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
 
 	if (mode == nullptr) {
@@ -324,7 +324,7 @@ Adesk::Boolean gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	return (AcDbEntity::subWorldDraw(mode));
 }
 
-Adesk::UInt32 gamedrawer::subSetAttributes(AcGiDrawableTraits * traits) {
+Adesk::UInt32 GameDrawer::subSetAttributes(AcGiDrawableTraits * traits) {
 	assertReadEnabled();
 	return (AcDbEntity::subSetAttributes(traits));
 }
