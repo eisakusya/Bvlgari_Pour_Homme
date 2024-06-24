@@ -3,13 +3,21 @@
 #include "gamejig.h"
 
 //-----------------------------------------------------------------------------
+<<<<<<< Updated upstream
 gamejig::gamejig () : AcEdJig (),
+=======
+Gamejig::Gamejig () : AcEdJig (),
+>>>>>>> Stashed changes
 	mCurrentInputLevel(0), mpEntity(nullptr) { }
 
-gamejig::~gamejig () { }
+Gamejig::~Gamejig () { }
 
 //-----------------------------------------------------------------------------
+<<<<<<< Updated upstream
 AcEdJig::DragStatus gamejig::startJig (gamedrawer *pEntity) {
+=======
+AcEdJig::DragStatus Gamejig::startJig (Gamedrawer *pEntity) {
+>>>>>>> Stashed changes
 	//- Store the new entity pointer
 	mpEntity = pEntity ;
 	//- Setup each input prompt
@@ -79,7 +87,7 @@ AcEdJig::DragStatus gamejig::startJig (gamedrawer *pEntity) {
 
 //-----------------------------------------------------------------------------
 //- Input sampler
-AcEdJig::DragStatus gamejig::sampler () {
+AcEdJig::DragStatus Gamejig::sampler () {
 	//- Setup the user input controls for each input
 	AcEdJig::UserInputControls userInputControls[2] ={
 		/*AcEdJig::UserInputControls::*/(AcEdJig::UserInputControls)0,
@@ -114,7 +122,7 @@ AcEdJig::DragStatus gamejig::sampler () {
 
 //-----------------------------------------------------------------------------
 //- Jigged entity update
-Adesk::Boolean gamejig::update () {
+Adesk::Boolean Gamejig::update () {
 	//- Check the current input number to see which update to do
 	double len, distance;
 	switch (mCurrentInputLevel + 1) {
@@ -140,13 +148,13 @@ Adesk::Boolean gamejig::update () {
 
 //-----------------------------------------------------------------------------
 //- Jigged entity pointer return
-AcDbEntity * gamejig::entity () const {
+AcDbEntity * Gamejig::entity () const {
 	return ((AcDbEntity *)mpEntity) ;
 }
 
 //-----------------------------------------------------------------------------
 //- Dynamic dimension data setup
-AcDbDimDataPtrArray * gamejig::dimData (const double dimScale) {
+AcDbDimDataPtrArray * Gamejig::dimData (const double dimScale) {
 
 	//	3---2
 	//	|	|
@@ -303,7 +311,7 @@ AcDbDimDataPtrArray * gamejig::dimData (const double dimScale) {
 
 //-----------------------------------------------------------------------------
 //- Dynamic dimension data update
-Acad::ErrorStatus gamejig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
+Acad::ErrorStatus Gamejig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
 	Acad::ErrorStatus es =Acad::eOk ;
 
 	//- Convert the const pointer to non const
@@ -334,7 +342,7 @@ Acad::ErrorStatus gamejig::setDimValue (const AcDbDimData *pDimData, const doubl
 //-----------------------------------------------------------------------------
 //- Various helper functions
 //- Dynamic dimdata update function
-Adesk::Boolean gamejig::updateDimData () {
+Adesk::Boolean Gamejig::updateDimData () {
 	//- Check the dim data store for validity
 	if ( mDimData.length () <= 0 )
 		return (true) ;
@@ -472,7 +480,7 @@ Adesk::Boolean gamejig::updateDimData () {
 
 //-----------------------------------------------------------------------------
 //- Std input to get a point with no rubber band
-AcEdJig::DragStatus gamejig::GetStartPoint () {
+AcEdJig::DragStatus Gamejig::GetStartPoint () {
 	AcGePoint3d newPnt ;
 	//- Get the point 
 	AcEdJig::DragStatus status =acquirePoint (newPnt) ;
@@ -489,7 +497,7 @@ AcEdJig::DragStatus gamejig::GetStartPoint () {
 
 //-----------------------------------------------------------------------------
 //- Std input to get a point with rubber band from point
-AcEdJig::DragStatus gamejig::GetNextPoint () {
+AcEdJig::DragStatus Gamejig::GetNextPoint () {
 	AcGePoint3d oldPnt = mInputPoints[mCurrentInputLevel] ;
 	AcGePoint3d newPnt ;
 	//- Get the point 

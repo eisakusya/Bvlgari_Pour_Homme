@@ -2,12 +2,20 @@
 #include "gamedrawer.h"
 
 //----------------------------------------------------------------------------
+<<<<<<< Updated upstream
 Adesk::UInt32 gamedrawer::kCurrentVersionNumber = 1 ;
+=======
+Adesk::UInt32 Gamedrawer::kCurrentVersionNumber = 1 ;
+>>>>>>> Stashed changes
 
 //----------------------------------------------------------------------------
 //---- runtime definition
 ACRX_DXF_DEFINE_MEMBERS (
+<<<<<<< Updated upstream
 	gamedrawer, AcDbEntity,
+=======
+	Gamedrawer, AcDbEntity,
+>>>>>>> Stashed changes
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
 	AcDbProxyEntity::kNoOperation, GAMEDRAWER, GAMEDRAWERAPP
 )
@@ -15,6 +23,7 @@ ACRX_DXF_DEFINE_MEMBERS (
 //----------------------------------------------------------------------------
 //---- construct & destruct
 
+<<<<<<< Updated upstream
 gamedrawer::gamedrawer(){
 	dataArray = { 0 };
 	length = 1000;
@@ -32,16 +41,51 @@ gamedrawer::gamedrawer(const std::array<std::array<int, COLUMN>, ROW>& data,cons
 }
 
 gamedrawer::~gamedrawer(){}
+=======
+Gamedrawer::Gamedrawer() {
+	setLength(1000.0);
+	startPoint = { 0,0,0 };
+	gridSize = 4;
+	m_center.set(500, 500, 0);
+	m_len = length / gridSize;
+	updataLocation();
+	//updataArray();
+	initText();
+}
+
+Gamedrawer::Gamedrawer(int num, AcGePoint3d center, const double len, const int grid) {
+	setLength(len);
+	setCenter(center);
+	gridSize = grid;
+	startPoint.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
+	m_len = length / gridSize;
+	updataLocation();
+	for (int i = 0; i < 16; i++) {
+		rectangles[i].m_realNum = i;
+	}
+	initText();
+}
+
+Gamedrawer::~Gamedrawer(){}
+>>>>>>> Stashed changes
 
 //----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //---- Dwg Filing protocol
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
+=======
+Acad::ErrorStatus Gamedrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
+>>>>>>> Stashed changes
 	assertReadEnabled ();
 	Acad::ErrorStatus es = AcDbEntity::dwgOutFields(pFiler);
 	if (es != Acad::eOk)
 		return (es);
+<<<<<<< Updated upstream
 	if ((es = pFiler->writeUInt32(gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+=======
+	if ((es = pFiler->writeUInt32(Gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+>>>>>>> Stashed changes
 		return (es);
 	//----- Output params
 	//.....
@@ -52,7 +96,11 @@ Acad::ErrorStatus gamedrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	return (pFiler->filerStatus());
 }
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
+=======
+Acad::ErrorStatus Gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
+>>>>>>> Stashed changes
 	assertWriteEnabled();
 	Acad::ErrorStatus es = AcDbEntity::dwgInFields(pFiler);
 	if (es != Acad::eOk)
@@ -60,7 +108,11 @@ Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	Adesk::UInt32 version = 0;
 	if ((es = pFiler->readUInt32(&version)) != Acad::eOk)
 		return (es);
+<<<<<<< Updated upstream
 	if (version > gamedrawer::kCurrentVersionNumber)
+=======
+	if (version > Gamedrawer::kCurrentVersionNumber)
+>>>>>>> Stashed changes
 		return (Acad::eMakeMeProxy);
 	//if ( version < gamedrawer::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
@@ -73,7 +125,11 @@ Acad::ErrorStatus gamedrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	return (pFiler->filerStatus());
 }
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
+=======
+Acad::ErrorStatus Gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
+>>>>>>> Stashed changes
 	assertReadEnabled();
 	//----- Save parent class information first.
 	Acad::ErrorStatus es = AcDbEntity::dxfOutFields(pFiler);
@@ -83,7 +139,11 @@ Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 	if (es != Acad::eOk)
 		return (es);
 	//----- Object version number needs to be saved first
+<<<<<<< Updated upstream
 	if ((es = pFiler->writeUInt32(AcDb::kDxfInt32, gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+=======
+	if ((es = pFiler->writeUInt32(AcDb::kDxfInt32, Gamedrawer::kCurrentVersionNumber)) != Acad::eOk)
+>>>>>>> Stashed changes
 		return (es);
 	//----- Output params
 	//.....
@@ -91,7 +151,11 @@ Acad::ErrorStatus gamedrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 	return (pFiler->filerStatus());
 }
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
+=======
+Acad::ErrorStatus Gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
+>>>>>>> Stashed changes
 	assertWriteEnabled();
 	//----- Read parent class information first.
 	Acad::ErrorStatus es = AcDbEntity::dxfInFields(pFiler);
@@ -106,7 +170,11 @@ Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
 		return (pFiler->filerStatus());
 	}
 	Adesk::UInt32 version = (Adesk::UInt32)rb.resval.rlong;
+<<<<<<< Updated upstream
 	if (version > gamedrawer::kCurrentVersionNumber)
+=======
+	if (version > Gamedrawer::kCurrentVersionNumber)
+>>>>>>> Stashed changes
 		return (Acad::eMakeMeProxy);
 
 	//----- Read params in non order dependant manner
@@ -138,9 +206,15 @@ Acad::ErrorStatus gamedrawer::dxfInFields(AcDbDxfFiler *pFiler) {
 }
 
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClass* classObj)
 {
 	if (classObj != gamedrawer::desc())
+=======
+Acad::ErrorStatus Gamedrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClass* classObj)
+{
+	if (classObj != Gamedrawer::desc())
+>>>>>>> Stashed changes
 		return AcDbEntity::applyPartialUndo(undoFiler, classObj);
 	Adesk::Int16 shortCode;
 	undoFiler->readItem(&shortCode);
@@ -168,6 +242,7 @@ Acad::ErrorStatus gamedrawer::applyPartialUndo(AcDbDwgFiler* undoFiler, AcRxClas
 //----------------------------------------------------------------------------
 //----- AcDbEntity protocols
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::setStart(AcGePoint3d& start) {
 	startPoint = start;
 	return Acad::eOk;
@@ -181,39 +256,100 @@ Acad::ErrorStatus gamedrawer::setCenter(AcGePoint3d& center) {
 	AcDbDwgFiler *pFiler = NULL;
 	if ((pFiler = undoFiler()) != NULL) {
 		undoFiler()->writeAddress(gamedrawer::desc());
+=======
+Acad::ErrorStatus Gamedrawer::setStart(AcGePoint3d& start) {
+	startPoint = start;
+	return Acad::eOk;
+}
+AcGePoint3d Gamedrawer::getStartpoint() const {
+	return startPoint;
+}
+
+Acad::ErrorStatus Gamedrawer::setCenter(AcGePoint3d& center) {
+	assertWriteEnabled(false);
+	AcDbDwgFiler *pFiler = NULL;
+	if ((pFiler = undoFiler()) != NULL) {
+		undoFiler()->writeAddress(Gamedrawer::desc());
+>>>>>>> Stashed changes
 		undoFiler()->writeItem((Adesk::Int16)kCenter);
 		undoFiler()->writePoint3d(m_center);
 	}
 	m_center = center;
 	return Acad::eOk;
 }
+<<<<<<< Updated upstream
 AcGePoint3d gamedrawer::getCenter() const {
+=======
+AcGePoint3d Gamedrawer::getCenter() const {
+>>>>>>> Stashed changes
 	assertReadEnabled();
 	return m_center;
 }
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::setLength(double len) {
 	assertWriteEnabled(false);
 	AcDbDwgFiler *pFiler = NULL;
 	if ((pFiler = undoFiler()) != NULL) {
 		undoFiler()->writeAddress(gamedrawer::desc());
+=======
+Acad::ErrorStatus Gamedrawer::setLength(double len) {
+	assertWriteEnabled(false);
+	AcDbDwgFiler *pFiler = NULL;
+	if ((pFiler = undoFiler()) != NULL) {
+		undoFiler()->writeAddress(Gamedrawer::desc());
+>>>>>>> Stashed changes
 		undoFiler()->writeItem((Adesk::Int16)kLength);
 		undoFiler()->writeDouble(length);
 	}
 	length = len;
 	return Acad::eOk;
 }
+<<<<<<< Updated upstream
 double gamedrawer::getLength() const {
+=======
+double Gamedrawer::getLength() const {
+>>>>>>> Stashed changes
 	assertReadEnabled();
 	return length;
 }
 
+<<<<<<< Updated upstream
 double gamedrawer::getGridsize() const {
 	return gridSize;
 }
 
 Acad::ErrorStatus gamedrawer::setdataArray(std::array<std::array<int, COLUMN>, ROW>& data) {
 	dataArray = data;
+=======
+double Gamedrawer::getGridsize() const {
+	return gridSize;
+}
+
+Acad::ErrorStatus Gamedrawer::updataLocation()
+{
+	int num = 0;
+	for (int i = 0; i < COLUMN; i++) {
+		for (int j = 0; j < ROW; j++) {
+			AcGePoint3d st;
+			st.set(startPoint.x + j * m_len, startPoint.y + i * m_len, startPoint.z);
+			rectangles[num].sPoint = st;
+			num = num + 1;
+		}
+	}
+	for (int i = 0; i < 16; i++) {
+		int dir[][2] = { {0, 0}, {1, 0}, {1, 1}, {0, 1} };
+		rectangles[i].m_points[0] = rectangles[i].sPoint;
+		//acutPrintf(_T("\n rectangles[i].sPoint:%f,%f,%f"), rectangles[i].sPoint.x, rectangles[i].sPoint.y, rectangles[i].sPoint.z);
+		AcGePoint3d startP = rectangles[i].m_points[0];
+		for (int j = 0; j < rectangles[i].m_ptNum; j++) {
+			rectangles[i].m_points[j].x = startP.x + m_len * dir[j][0];
+			rectangles[i].m_points[j].y = startP.y + m_len * dir[j][1];
+			rectangles[i].m_points[j].z = startP.z;
+			//acutPrintf(_T("\nRecPoint:%f,%f,%f"), rectangles[i].m_points[j].x, rectangles[i].m_points[j].y, rectangles[i].m_points[j].z);
+		}
+	}
+>>>>>>> Stashed changes
 	return Acad::eOk;
 }
 
@@ -221,7 +357,11 @@ Acad::ErrorStatus gamedrawer::setdataArray(std::array<std::array<int, COLUMN>, R
 //----- Graphics protocols
 
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::subGetGripPoints(
+=======
+Acad::ErrorStatus Gamedrawer::subGetGripPoints(
+>>>>>>> Stashed changes
 	AcGePoint3dArray &gripPoints,
 	AcDbIntArray &osnapModes,
 	AcDbIntArray &geomIds) const
@@ -246,7 +386,11 @@ Acad::ErrorStatus gamedrawer::subGetGripPoints(
 	return Acad::eOk;
 }
 
+<<<<<<< Updated upstream
 Acad::ErrorStatus gamedrawer::subMoveGripPointsAt(
+=======
+Acad::ErrorStatus Gamedrawer::subMoveGripPointsAt(
+>>>>>>> Stashed changes
 	const AcDbIntArray &indices,
 	const AcGeVector3d &offset)
 {
@@ -290,13 +434,18 @@ Acad::ErrorStatus gamedrawer::subMoveGripPointsAt(
 		setCenter(temp);
 		break;
 	}
+	
 	return Acad::eOk;
 }
 
+<<<<<<< Updated upstream
 
 
 
 Adesk::Boolean gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
+=======
+Adesk::Boolean Gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
+>>>>>>> Stashed changes
 	assertReadEnabled();
 
 	if (mode == nullptr) {
@@ -310,6 +459,11 @@ Adesk::Boolean gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	AcGePoint3d start;
 	start.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 	setStart(start);
+<<<<<<< Updated upstream
+=======
+	updataLocation();
+	initText();
+>>>>>>> Stashed changes
 	for (int i = 0; i <= gridSize; ++i) {
 		// vertical line
 		AcGePoint3d startP(startPoint.x + i * samllLength, startPoint.y, 0.0);
@@ -324,8 +478,76 @@ Adesk::Boolean gamedrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	return (AcDbEntity::subWorldDraw(mode));
 }
 
+<<<<<<< Updated upstream
 Adesk::UInt32 gamedrawer::subSetAttributes(AcGiDrawableTraits * traits) {
+=======
+Adesk::UInt32 Gamedrawer::subSetAttributes(AcGiDrawableTraits * traits) {
+>>>>>>> Stashed changes
 	assertReadEnabled();
 	return (AcDbEntity::subSetAttributes(traits));
 }
 
+<<<<<<< Updated upstream
+=======
+void Gamedrawer::updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray) //根据起点更新点阵坐标
+{
+	for (int i = 0; i < 16; i++) {
+		rectangles[i].m_realNum = dataArray[3 - i / gridSize][i % gridSize];
+	}
+	initText();
+	recordGraphicsModified();
+}
+
+void Gamedrawer::initText() {
+	for (int i = 0; i < 16; i++) {
+		std::string str;
+		if (rectangles[i].m_realNum == 0) {
+			str = " ";
+		}
+		else {
+			str = std::to_string(rectangles[i].m_realNum); // 将int转换为字符串
+		}
+		
+	// 使用strcpy()进行复制（如果是Unicode字符集可使用wcscpy）
+		rectangles[i].pMsg = new TCHAR[str.length() + 1];
+#ifdef _UNICODE
+		std::wstring wstr(str.begin(), str.end()); // 将std::string转换为std::wstring
+		wcsncpy(rectangles[i].pMsg, wstr.c_str(), str.length());      // 使用wcsncpy将std::wstring复制到TCHAR*
+		rectangles[i].pMsg[wstr.length()] = L'\0'; // 添加字符串结束符
+#else	
+		strncpy(pMsg, str.c_str(), msgSize);       // 使用strncpy将std::string复制到TCHAR*
+		pMsg[str.length()] = '\0'; // 添加字符串结束符
+#endif
+		double width = (m_len / 4) * 0.6638 * str.length();//
+		rectangles[i].position = AcGePoint3d(rectangles[i].m_points[0].x + (m_len / 2 - width / 2), rectangles[i].m_points[0].y + (m_len * 3 / 8), 0.0);
+		rectangles[i].normal = AcGeVector3d(0.0, 0.0, 1.0);
+		rectangles[i].direction = AcGeVector3d(1.0, 0.0, 0.0);
+		rectangles[i].m_length = _tcslen(rectangles[i].pMsg);
+		if (rectangles[i].pMsg == nullptr) {
+			throw std::invalid_argument("msg cannot be null");
+		}
+		rectangles[i].raw = Adesk::kFalse;
+		rectangles[i].textStyle.setTextSize(m_len / 4);
+		//acutPrintf(_T("\ninitText"));
+	}
+}
+
+//void gamedrawer::moveBlock(AcGePoint3d stPoint, int size) //移动（棋盘发生大小的改变），调用的函数
+//{
+//	for (int i = 0; i < 16; i++) {
+//		m_len = size;  //更新大小
+//		//updataArray();  //更新点的坐标
+//		initText();  //更新文本的位置
+//	}
+//	
+//}
+//
+//void gamedrawer::updateBlock() //玩家使用WSAD时调用的函数
+//{
+//	for (int i = 0; i < 16; i++) {
+//		rectangles[i].m_realNum = 0;  //更新真实值
+//		initText();  //更新文本的位置
+//	}
+//	
+//}
+>>>>>>> Stashed changes
