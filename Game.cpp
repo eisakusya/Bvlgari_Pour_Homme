@@ -257,3 +257,8 @@ int Game::getElement(int row, int col)
 	}
 }
 
+std::array<std::array<int, GRID_SIZE>, GRID_SIZE> Game::getGridCopy()
+{
+	return grid;
+}
+
