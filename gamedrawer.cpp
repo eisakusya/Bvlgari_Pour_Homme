@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "gamedrawer.h"
-
+#include "Block.h"
 //----------------------------------------------------------------------------
 Adesk::UInt32 GameDrawer::kCurrentVersionNumber = 1 ;
 
@@ -15,20 +15,26 @@ ACRX_DXF_DEFINE_MEMBERS (
 //----------------------------------------------------------------------------
 //---- construct & destruct
 
-GameDrawer::GameDrawer(){
-	dataArray = { 0 };
-	length = 1000;
+GameDrawer::GameDrawer() {
+	setLength(1000.0);
 	startPoint = { 0,0,0 };
 	gridSize = 4;
-	m_center.set(500,500,0);
+	m_center.set(500, 500, 0);
+	m_len = length / gridSize;
+	updataSpArraay();
+	updateRectangles();
+	initText();
 }
 
-GameDrawer::GameDrawer(const std::array<std::array<int, COLUMN>, ROW>& data,const AcGePoint3d& center, const double len, const int grid) {
-	dataArray = data;
-	length = len;
-	m_center = center;
+GameDrawer::GameDrawer(int num, AcGePoint3d center, const double len, const int grid) {
+	setLength(len);
+	setCenter(center);
 	gridSize = grid;
 	startPoint.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
+	m_len = length / gridSize;
+	updataSpArraay();
+	updateRectangles();
+	initText();
 }
 
 GameDrawer::~GameDrawer(){}
@@ -201,6 +207,7 @@ Acad::ErrorStatus GameDrawer::setLength(double len) {
 		undoFiler()->writeDouble(length);
 	}
 	length = len;
+	m_len = length / gridSize;
 	return Acad::eOk;
 }
 double GameDrawer::getLength() const {
@@ -212,8 +219,17 @@ double GameDrawer::getGridsize() const {
 	return gridSize;
 }
 
-Acad::ErrorStatus GameDrawer::setdataArray(std::array<std::array<int, COLUMN>, ROW>& data) {
-	dataArray = data;
+Acad::ErrorStatus GameDrawer::updataSpArraay()
+{
+	int num = 0;
+	for (int i = 0; i < COLUMN; i++) {
+		for (int j = 0; j < ROW; j++) {
+			AcGePoint3d st;
+			st.set(startPoint.x + i * m_len, startPoint.y + j * m_len, startPoint.z);
+			rectangles[num].sPoint = st;
+			num = num + 1;
+		}
+	}
 	return Acad::eOk;
 }
 
@@ -293,9 +309,6 @@ Acad::ErrorStatus GameDrawer::subMoveGripPointsAt(
 	return Acad::eOk;
 }
 
-
-
-
 Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
 
@@ -310,6 +323,9 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	AcGePoint3d start;
 	start.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 	setStart(start);
+	updataSpArraay();
+	updateRectangles();
+	initText();
 	for (int i = 0; i <= gridSize; ++i) {
 		// vertical line
 		AcGePoint3d startP(startPoint.x + i * samllLength, startPoint.y, 0.0);
@@ -321,6 +337,13 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 		mode->geometry().polyline(2, new AcGePoint3d[2]{ startP2 ,endP2 });
 	}
 
+	for (int i = 0; i <= gridSize * gridSize; ++i) {
+		mode->geometry().polygon(4, rectangles[i].m_points); //画一个正方形多边形
+
+		mode->geometry().text(rectangles[i].position, rectangles[i].normal, rectangles[i].direction, rectangles[i].pMsg,
+			rectangles[i].m_length, Adesk::kFalse, rectangles[i].textStyle); 
+	}
+
 	return (AcDbEntity::subWorldDraw(mode));
 }
 
@@ -329,3 +352,74 @@ Adesk::UInt32 GameDrawer::subSetAttributes(AcGiDrawableTraits * traits) {
 	return (AcDbEntity::subSetAttributes(traits));
 }
 
+void GameDrawer::updateRectangles() //根据起点更新点阵坐标
+{
+
+	for (int i = 0; i < 16; i++) {
+		int dir[][2] = { {0, 0}, {1, 0}, {1, 1}, {0, 1} };
+		rectangles[i].m_points[0] = rectangles[i].sPoint;
+		//acutPrintf(_T("\n rectangles[i].sPoint:%f,%f,%f"), rectangles[i].sPoint.x, rectangles[i].sPoint.y, rectangles[i].sPoint.z);
+		AcGePoint3d startP = rectangles[i].m_points[0];
+		for (int j = 0; j < rectangles[i].m_ptNum; j++) {
+			rectangles[i].m_points[j].x = startP.x + m_len * dir[j][0];
+			rectangles[i].m_points[j].y = startP.y + m_len * dir[j][1];
+			rectangles[i].m_points[j].z = startP.z;
+			//acutPrintf(_T("\nRecPoint:%f,%f,%f"), rectangles[i].m_points[j].x, rectangles[i].m_points[j].y, rectangles[i].m_points[j].z);
+		}
+		rectangles[i].m_realNum = i;
+	}
+	//acutPrintf(_T("\nupdateRectangles"));
+}
+
+void GameDrawer::initText() {
+	for (int i = 0; i < 16; i++) {
+		std::string str;
+		if (rectangles[i].m_realNum == 0) {
+			str = " ";
+		}
+		else {
+			str = std::to_string(rectangles[i].m_realNum); // 将int转换为字符串
+		}
+		
+	// 使用strcpy()进行复制（如果是Unicode字符集可使用wcscpy）
+		rectangles[i].pMsg = new TCHAR[str.length() + 1];
+#ifdef _UNICODE
+		std::wstring wstr(str.begin(), str.end()); // 将std::string转换为std::wstring
+		wcsncpy(rectangles[i].pMsg, wstr.c_str(), str.length());      // 使用wcsncpy将std::wstring复制到TCHAR*
+		rectangles[i].pMsg[wstr.length()] = L'\0'; // 添加字符串结束符
+#else	
+		strncpy(pMsg, str.c_str(), msgSize);       // 使用strncpy将std::string复制到TCHAR*
+		pMsg[str.length()] = '\0'; // 添加字符串结束符
+#endif
+		double width = (m_len / 4) * 0.6638 * str.length();//
+		rectangles[i].position = AcGePoint3d(rectangles[i].m_points[0].x + (m_len / 2 - width / 2), rectangles[i].m_points[0].y + (m_len * 3 / 8), 0.0);
+		rectangles[i].normal = AcGeVector3d(0.0, 0.0, 1.0);
+		rectangles[i].direction = AcGeVector3d(1.0, 0.0, 0.0);
+		rectangles[i].m_length = _tcslen(rectangles[i].pMsg);
+		if (rectangles[i].pMsg == nullptr) {
+			throw std::invalid_argument("msg cannot be null");
+		}
+		rectangles[i].raw = Adesk::kFalse;
+		rectangles[i].textStyle.setTextSize(m_len / 4);
+		//acutPrintf(_T("\ninitText"));
+	}
+}
+
+void GameDrawer::moveBlock(AcGePoint3d stPoint, int size) //移动（棋盘发生大小的改变），调用的函数
+{
+	for (int i = 0; i < 16; i++) {
+		m_len = size;  //更新大小
+		updateRectangles();  //更新点的坐标
+		initText();  //更新文本的位置
+	}
+	
+}
+
+void GameDrawer::updateBlock() //玩家使用WSAD时调用的函数
+{
+	for (int i = 0; i < 16; i++) {
+		rectangles[i].m_realNum = 0;  //更新真实值
+		initText();  //更新文本的位置
+	}
+	
+}

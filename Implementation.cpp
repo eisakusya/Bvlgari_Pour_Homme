@@ -27,6 +27,7 @@ void myGame()
 	GameDrawer* pGameDrawer = new GameDrawer();
 	AcDbObjectId gameDrawerId;
 	pBTR->appendAcDbEntity(gameDrawerId, pGameDrawer);
+	pGameDrawer->close();
 
 	//- game loop
 	ACHAR* keyWord = nullptr;

@@ -3,13 +3,13 @@
 #include "gamejig.h"
 
 //-----------------------------------------------------------------------------
-gamejig::gamejig () : AcEdJig (),
+GameJig::gamejig () : AcEdJig (),
 	mCurrentInputLevel(0), mpEntity(nullptr) { }
 
 gamejig::~gamejig () { }
 
 //-----------------------------------------------------------------------------
-AcEdJig::DragStatus gamejig::startJig (GameDrawer *pEntity) {
+AcEdJig::DragStatus GameJig::startJig (GameDrawer *pEntity) {
 	//- Store the new entity pointer
 	mpEntity = pEntity ;
 	//- Setup each input prompt

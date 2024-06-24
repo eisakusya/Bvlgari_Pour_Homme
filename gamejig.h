@@ -3,7 +3,7 @@
 #pragma once
 class GameDrawer;
 //-----------------------------------------------------------------------------
-class gamejig : public AcEdJig {
+class GameJig : public AcEdJig {
 
 private:
 	//- Member variables
@@ -19,8 +19,8 @@ public:
 	GameDrawer *mpEntity ;
 
 public:
-	gamejig () ;
-	~gamejig () ;
+	GameJig () ;
+	~GameJig () ;
 
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
 	AcEdJig::DragStatus startJig (GameDrawer *pEntityToJig) ;
