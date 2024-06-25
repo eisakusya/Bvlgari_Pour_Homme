@@ -26,6 +26,7 @@ void myGame()
 	}
 	GameDrawer* pGameDrawer = new GameDrawer();
 	pGameDrawer->updataArray(game.getGridCopy());
+	pGameDrawer->updataScore(game.getScore(), game.getRecordScore());
 	AcDbObjectId gameDrawerId;
 	pBTR->appendAcDbEntity(gameDrawerId, pGameDrawer);
 	pGameDrawer->close();
