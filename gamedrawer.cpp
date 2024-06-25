@@ -353,12 +353,49 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 		mode->geometry().polyline(2, new AcGePoint3d[2]{ startP2 ,endP2 });
 	}
 
-	for (int i = 0; i <= gridSize * gridSize; ++i) {
+	for (int i = 0; i < gridSize * gridSize; ++i) {
+		
+
+		// 创建Hatch对象并设置其属性
+		AcDbHatch *pHatch = new AcDbHatch();
+		pHatch->setDatabaseDefaults();
+		pHatch->setAssociative(Adesk::kFalse);
+		pHatch->setPatternScale(1.0);
+		pHatch->setPatternAngle(0.0);
+		pHatch->setPattern(AcDbHatch::kPreDefined, _T("SOLID"));
+		// 定义多边形的边界
+		AcGePoint2dArray vertices;
+		double side = length / gridSize / 9;
+		int dir[][2] = { {1, 1}, {-1,1 }, {-1, -1}, {1, -1} };
+		for (int j = 0; j < 4; ++j) {
+			
+			vertices.append(AcGePoint2d(rectangles[i].m_points[j].x + dir[j][0] * side, rectangles[i].m_points[j].y  +dir[j][1] * side));
+		}
+		// 闭合多边形边界
+		vertices.append(AcGePoint2d(rectangles[i].m_points[0].x + dir[0][0] * side, rectangles[i].m_points[0].y + dir[0][1] * side));
+		// 创建一个边界环
+		AcGeDoubleArray array;
+		for (int j = 0; j < 4; j++) {
+			array.append(0);
+		}
+		pHatch->appendLoop(AcDbHatch::kExternal, vertices, array);
+		// 重新计算填充区域
+		pHatch->evaluateHatch();
+		mode->subEntityTraits().setColor(rectangles[i].m_color); // 设置颜色rectangles[i].m_color
+		pHatch->worldDraw(mode);
+		delete pHatch;
+
+
+
+		//边框和文字
+		mode->subEntityTraits().setColor(255); // 设置颜色为7（白色或黑色，取决于背景）
 		mode->geometry().polygon(4, rectangles[i].m_points); //画一个正方形多边形
 
 		mode->geometry().text(rectangles[i].position, rectangles[i].normal, rectangles[i].direction, rectangles[i].pMsg,
-			rectangles[i].m_length, Adesk::kFalse, rectangles[i].textStyle); 
+			rectangles[i].m_length, Adesk::kFalse, rectangles[i].textStyle);
 	}
+
+
 
 	return (AcDbEntity::subWorldDraw(mode));
 }
@@ -379,6 +416,46 @@ void GameDrawer::updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray)
 
 void GameDrawer::initText() {
 	for (int i = 0; i < 16; i++) {
+		//更新颜色
+		//更新颜色
+		switch (rectangles[i].m_realNum) {
+		case 0:
+			rectangles[i].m_color = color0;
+			break;
+		case 2:
+			rectangles[i].m_color = color2;
+			break;
+		case 4:
+			rectangles[i].m_color = color4;
+			break;
+		case 8:
+			rectangles[i].m_color = color8;
+			break;
+		case 16:
+			rectangles[i].m_color = color16;
+			break;
+		case 32:
+			rectangles[i].m_color = color32;
+			break;
+		case 64:
+			rectangles[i].m_color = color64;
+			break;
+		case 128:
+			rectangles[i].m_color = color128;
+			break;
+		case 256:
+			rectangles[i].m_color = color256;
+			break;
+		case 512:
+			rectangles[i].m_color = color512;
+			break;
+		case 1024:
+			rectangles[i].m_color = color1024;
+			break;
+		default:
+			std::cerr << "Invalid m_realNum value: " << rectangles[i].m_realNum << "\n";
+			continue;
+		}
 		std::string str;
 		if (rectangles[i].m_realNum == 0) {
 			str = " ";

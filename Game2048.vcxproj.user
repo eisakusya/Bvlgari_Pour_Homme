@@ -5,8 +5,9 @@
     <LocalDebuggerCommandArguments> /product ZWCAD /p Default</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommand>D:\Study\experiment\ZWSOFT\ZWCAD 2021\zwcad.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>D:\0shixun\download\software\ZWCAD.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments> /product ZWCAD /p Default</LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>D:\Study\experiment\ZWSOFT\ZWCAD 2021\zwcad.exe</LocalDebuggerCommand>

@@ -36,6 +36,7 @@
 #include <cmath> 
 #include <dbjig.h>
 #include "gamejig.h"
+#include "dbhatch.h"
 
 #define cmd_group_name _T("Game2048")
 
