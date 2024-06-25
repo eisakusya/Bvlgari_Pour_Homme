@@ -342,6 +342,36 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	setStart(start);
 	updataLocation();
 	initText();
+
+	//————————绘制外面的大边框————————
+	int gap = (length / gridSize) / 4;  //间隙大小
+	AcGePoint3d * outSideArray = new AcGePoint3d[4];
+	outSideArray[0] = AcGePoint3d(startPoint.x - gap, startPoint.y - gap, 0);
+	outSideArray[1] = AcGePoint3d(startPoint.x + length + gap, startPoint.y - gap, 0);
+	outSideArray[2] = AcGePoint3d(startPoint.x + length + gap, startPoint.y + length + (length / gridSize) + gap, 0);
+	outSideArray[3] = AcGePoint3d(startPoint.x - gap, startPoint.y + length + (length / gridSize) + gap, 0);
+	mode->subEntityTraits().setColor(7); // 设置颜色为7（白色或黑色，取决于背景）
+	mode->geometry().polygon(4, outSideArray); //画一个正方形多边形
+
+	//————————绘制分数显示————————
+	mode->geometry().text(AcGePoint3d(outSideArray[3].x + gap, outSideArray[3].y - gap - scoreStyle.textSize() ,0), rectangles[0].normal, rectangles[0].direction, _T("当前分数："),
+		5, Adesk::kFalse, scoreStyle);
+
+	mode->geometry().text(AcGePoint3d(outSideArray[3].x + length / 2 + gap, outSideArray[3].y - gap - scoreStyle.textSize(), 0), rectangles[0].normal, rectangles[0].direction, _T("历史高分："),
+		5, Adesk::kFalse, scoreStyle);
+
+	mode->geometry().text(AcGePoint3d(outSideArray[3].x + gap, outSideArray[3].y - gap - scoreStyle.textSize() - gap, 0), 
+		rectangles[0].normal, rectangles[0].direction, pCurScore,
+		lstrlen(pCurScore)-7, Adesk::kFalse, scoreStyle);
+
+	mode->geometry().text(AcGePoint3d(outSideArray[3].x + length / 2 + gap, outSideArray[3].y - gap - scoreStyle.textSize() - gap, 0),
+		rectangles[0].normal, rectangles[0].direction, pHisScore,
+		lstrlen(pHisScore)-7, Adesk::kFalse, scoreStyle);
+
+	/*mode->geometry().text(, rectangles[0].normal, rectangles[0].direction, pCurScore,
+		rectangles[0].m_length, Adesk::kFalse, rectangles[0].textStyle);*/
+
+	//————————绘制棋盘————————
 	for (int i = 0; i <= gridSize; ++i) {
 		// vertical line
 		AcGePoint3d startP(startPoint.x + i * samllLength, startPoint.y, 0.0);
@@ -356,44 +386,45 @@ Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	for (int i = 0; i < gridSize * gridSize; ++i) {
 		
 
-		// 创建Hatch对象并设置其属性
-		AcDbHatch *pHatch = new AcDbHatch();
+		//——————绘制颜色的填充————————
+		AcDbHatch *pHatch = new AcDbHatch();// 创建Hatch对象并设置其属性
 		pHatch->setDatabaseDefaults();
 		pHatch->setAssociative(Adesk::kFalse);
 		pHatch->setPatternScale(1.0);
 		pHatch->setPatternAngle(0.0);
 		pHatch->setPattern(AcDbHatch::kPreDefined, _T("SOLID"));
-		// 定义多边形的边界
-		AcGePoint2dArray vertices;
+		AcGePoint2dArray vertices;// 定义多边形的边界
 		double side = length / gridSize / 9;
 		int dir[][2] = { {1, 1}, {-1,1 }, {-1, -1}, {1, -1} };
-		for (int j = 0; j < 4; ++j) {
-			
+		for (int j = 0; j < 4; ++j) {			
 			vertices.append(AcGePoint2d(rectangles[i].m_points[j].x + dir[j][0] * side, rectangles[i].m_points[j].y  +dir[j][1] * side));
 		}
-		// 闭合多边形边界
-		vertices.append(AcGePoint2d(rectangles[i].m_points[0].x + dir[0][0] * side, rectangles[i].m_points[0].y + dir[0][1] * side));
-		// 创建一个边界环
-		AcGeDoubleArray array;
+		
+		vertices.append(AcGePoint2d(rectangles[i].m_points[0].x + dir[0][0] * side, rectangles[i].m_points[0].y + dir[0][1] * side));// 闭合多边形边界
+		AcGeDoubleArray array;// 创建一个边界环
 		for (int j = 0; j < 4; j++) {
 			array.append(0);
 		}
-		pHatch->appendLoop(AcDbHatch::kExternal, vertices, array);
-		// 重新计算填充区域
-		pHatch->evaluateHatch();
+		pHatch->appendLoop(AcDbHatch::kExternal, vertices, array);		
+		pHatch->evaluateHatch();// 重新计算填充区域
 		mode->subEntityTraits().setColor(rectangles[i].m_color); // 设置颜色rectangles[i].m_color
 		pHatch->worldDraw(mode);
 		delete pHatch;
 
 
 
-		//边框和文字
+		//————————绘制block边框和文字————————
 		mode->subEntityTraits().setColor(255); // 设置颜色为7（白色或黑色，取决于背景）
 		mode->geometry().polygon(4, rectangles[i].m_points); //画一个正方形多边形
 
 		mode->geometry().text(rectangles[i].position, rectangles[i].normal, rectangles[i].direction, rectangles[i].pMsg,
 			rectangles[i].m_length, Adesk::kFalse, rectangles[i].textStyle);
+
+
 	}
+	
+
+	
 
 
 
@@ -412,6 +443,31 @@ void GameDrawer::updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray)
 	}
 	initText();
 	recordGraphicsModified();
+}
+
+void GameDrawer::updataScore(double curScore, double hisScore)
+{
+	std::string str1;
+	std::string str2;
+	
+	str1 = std::to_string(curScore); // 将int转换为字符串
+	str2 = std::to_string(hisScore); // 将int转换为字符串
+
+	// 使用strcpy()进行复制（如果是Unicode字符集可使用wcscpy）
+	pCurScore = new TCHAR[str1.length() + 1];
+	pHisScore = new TCHAR[str2.length() + 1];
+#ifdef _UNICODE
+	std::wstring wstr1(str1.begin(), str1.end()); // 将std::string转换为std::wstring
+	std::wstring wstr2(str2.begin(), str2.end()); // 将std::string转换为std::wstring
+	wcsncpy(pCurScore, wstr1.c_str(), str1.length());      // 使用wcsncpy将std::wstring复制到TCHAR*
+	wcsncpy(pHisScore, wstr2.c_str(), str2.length());      // 使用wcsncpy将std::wstring复制到TCHAR*
+	pCurScore[wstr1.length()] = L'\0'; // 添加字符串结束符
+	pHisScore[wstr2.length()] = L'\0'; // 添加字符串结束符
+#else	
+	strncpy(pMsg, str.c_str(), msgSize);       // 使用strncpy将std::string复制到TCHAR*
+	pMsg[str.length()] = '\0'; // 添加字符串结束符
+#endif
+	
 }
 
 void GameDrawer::initText() {
@@ -456,6 +512,7 @@ void GameDrawer::initText() {
 			std::cerr << "Invalid m_realNum value: " << rectangles[i].m_realNum << "\n";
 			continue;
 		}
+
 		std::string str;
 		if (rectangles[i].m_realNum == 0) {
 			str = " ";
@@ -484,6 +541,7 @@ void GameDrawer::initText() {
 		}
 		rectangles[i].raw = Adesk::kFalse;
 		rectangles[i].textStyle.setTextSize(m_len / 4);
+		scoreStyle.setTextSize(length / gridSize / 6);
 		//acutPrintf(_T("\ninitText"));
 	}
 }

@@ -98,12 +98,18 @@ private:
 	double m_len;     
 	struct Rectangle rectangles[(COLUMN*ROW)];
 	AcGePoint3d sPArray[(COLUMN*ROW)];
+
+	TCHAR  *pCurScore; // 当前的分数
+	TCHAR  *pHisScore; // 历史分数
+	AcGiTextStyle scoreStyle;  // 创建文本样式对象，根据需要设置样式属性
 	
 public:
 	void updataArray(std::array<std::array<int, ROW>, COLUMN> dataArray);
+	void updataScore(double curScore, double hisScore);
 	void initText();
 	/*void moveBlock(AcGePoint3d stPoint, int size);
 	void updateBlock();*/
+	
 };
 
 #endif

@@ -51,11 +51,16 @@ void myGame()
 		else if (kword == _T("d")) {
 			game.move('d');
 		}
+		else {
+			rc = acedGetString(0, _T("\nDecide direction to move [W/A/S/D]: "), kword);
+			continue;
+		}
 
 		game.generate();
 		pGameDrawer = nullptr;
 		acdbOpenAcDbEntity((AcDbEntity*&)pGameDrawer, gameDrawerId, AcDb::kForWrite);
 		pGameDrawer->updataArray(game.getGridCopy());
+		pGameDrawer->updataScore(game.getScore(), game.getRecordScore());
 		pGameDrawer->close();
 
 		/*acedInitGet(RSG_NONULL, _T("W,w A,a S,s D,d"));*/
