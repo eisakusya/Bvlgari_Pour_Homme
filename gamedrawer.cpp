@@ -58,6 +58,11 @@ Acad::ErrorStatus GameDrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	pFiler->writeDouble(length);
 	//pFiler->writePoint3d(startPoint);
 	pFiler->writePoint3d(m_center);
+	for (int i = 0; i < gridSize * gridSize; i++) {
+		pFiler->writeInt16(rectangles[i].m_realNum);
+		pFiler->writeInt16(rectangles[i].m_color);
+	}
+	
 
 	return (pFiler->filerStatus());
 }
@@ -79,7 +84,12 @@ Acad::ErrorStatus GameDrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	//pFiler->readPoint3d(&startPoint);
 	pFiler->readDouble(&length);
 	pFiler->readPoint3d(&m_center);
-
+	for (int i = 0; i < gridSize * gridSize; i++) {
+		pFiler->readInt16(&rectangles[i].m_realNum);
+		pFiler->readInt16(&rectangles[i].m_color);
+		//acutPrintf(_T("\n%d "), &rectangles[i].m_color);
+	}
+	
 	return (pFiler->filerStatus());
 }
 
@@ -97,6 +107,8 @@ Acad::ErrorStatus GameDrawer::dxfOutFields(AcDbDxfFiler *pFiler) const {
 		return (es);
 	//----- Output params
 	//.....
+	
+
 
 	return (pFiler->filerStatus());
 }
@@ -326,6 +338,31 @@ Acad::ErrorStatus GameDrawer::subMoveGripPointsAt(
 	return Acad::eOk;
 }
 
+Acad::ErrorStatus GameDrawer::subGetOsnapPoints(AcDb::OsnapMode osnapMode, Adesk::GsMarker gsSelectionMark, const AcGePoint3d & pickPoint, const AcGePoint3d & lastPoint, const AcGeMatrix3d & viewXform, AcGePoint3dArray & snapPoints, AcDbIntArray & geomIds) const
+{
+	assertReadEnabled();
+	if (osnapMode == AcDb::kOsModeQuad) {
+		AcGePoint3d start;
+		start.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
+		AcGePoint3d pZero, pOne, pTwo, pThree, center;
+		//	3---2
+		//	|	|
+		//	0---1
+		pZero = start;
+		pOne.set(start.x + length, start.y, start.z);
+		pTwo.set(start.x + length, start.y + length, start.z);
+		pThree.set(start.x, start.y + length, start.z);
+		center = m_center;
+		snapPoints.append(pZero);
+		snapPoints.append(pOne);
+		snapPoints.append(pTwo);
+		snapPoints.append(pThree);
+		
+	}
+	//acutPrintf(_T("Snap points"));
+	return Acad::eOk;
+}
+
 Adesk::Boolean GameDrawer::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
 
@@ -507,6 +544,9 @@ void GameDrawer::initText() {
 			break;
 		case 1024:
 			rectangles[i].m_color = color1024;
+			break;
+		case 2048:
+			rectangles[i].m_color = color2048;
 			break;
 		default:
 			std::cerr << "Invalid m_realNum value: " << rectangles[i].m_realNum << "\n";

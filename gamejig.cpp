@@ -1,6 +1,7 @@
 //-----------------------------------------------------------------------------
 #include "pch.h"
 #include "gamejig.h"
+#include<array>
 
 //-----------------------------------------------------------------------------
 Gamejig::Gamejig () : AcEdJig (),
@@ -9,7 +10,10 @@ Gamejig::Gamejig () : AcEdJig (),
 Gamejig::~Gamejig() { }
 
 //-----------------------------------------------------------------------------
-AcEdJig::DragStatus Gamejig::startJig (GameDrawer *pEntity) {
+AcEdJig::DragStatus Gamejig::startJig (GameDrawer *pEntity, std::array<std::array<int, 4>, 4> gridCopy, double curScore, double HisScore) {
+	initGrid = gridCopy;
+	m_curScore = curScore;
+	m_hisScore = HisScore;
 	//- Store the new entity pointer
 	mpEntity = pEntity ;
 	//- Setup each input prompt
@@ -117,12 +121,15 @@ AcEdJig::DragStatus Gamejig::sampler () {
 Adesk::Boolean Gamejig::update () {
 	//- Check the current input number to see which update to do
 	double len, distance;
+	//std::array<std::array<int, 4>, 4> zeroArray = { 0 };
 	switch (mCurrentInputLevel + 1) {
 	case 1:
 		// TODO : update your entity for this input
 		//mpEntity->setCenter (mInputPoints [mCurrentInputLevel]) ;
 		mpEntity->setCenter(mInputPoints[mCurrentInputLevel]);
-
+		
+		mpEntity->updataArray(initGrid);
+		mpEntity->updataScore(m_curScore, m_hisScore);
 		break;
 	case 2:
 		// TODO : update your entity for this input
@@ -130,6 +137,8 @@ Adesk::Boolean Gamejig::update () {
 		distance = mInputPoints[mCurrentInputLevel].distanceTo(mpEntity->getCenter());
 		len = distance * std::sqrt(2.0);
 		mpEntity->setLength(len);
+		mpEntity->updataArray(initGrid);
+		mpEntity->updataScore(m_curScore , m_hisScore);
 		break;
 	default:
 		break;

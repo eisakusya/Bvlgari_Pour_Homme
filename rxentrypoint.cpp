@@ -14,7 +14,8 @@ void initapp()
 {
 	acedRegCmds->addCommand(cmd_group_name, _T("helloworld"), _T("helloworld"), ACRX_CMD_MODAL, helloworld);
 	//- 2048
-	acedRegCmds->addCommand(cmd_group_name, _T("2048STRAT"), _T("2048STRAT"), ACRX_CMD_MODAL, myGame);
+	acedRegCmds->addCommand(cmd_group_name, _T("2048START"), _T("2048START"), ACRX_CMD_MODAL, myGame);
+	acedRegCmds->addCommand(cmd_group_name, _T("2048jig"), _T("2048jig"), ACRX_CMD_MODAL, gameJig);
 
 	GameDrawer::rxInit();
 	acrxBuildClassHierarchy();

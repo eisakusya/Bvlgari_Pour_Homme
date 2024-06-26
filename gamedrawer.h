@@ -21,6 +21,7 @@ enum ColorIndex {
 	color256 = 85,
 	color512 = 90,
 	color1024 = 1,
+	color2048 = 133,
 };
 
 
@@ -29,8 +30,8 @@ struct Rectangle
 	AcGePoint3d sPoint;
 	int m_ptNum = 4; //顶点数，用于绘制正方形
 	AcGePoint3d* m_points = new AcGePoint3d[4]; //顶点矩阵，用于绘制正方形
-	int m_realNum;  //真实的数字
-	int m_color;  //颜色
+	int16_t m_realNum;  //真实的数字
+	int16_t m_color;  //颜色
 	//TextStyle m_ts;
 	AcGePoint3d position;  // 设置文本位置
 	AcGeVector3d normal;   // 设置文本法线方向
@@ -83,7 +84,15 @@ public:
 	virtual Acad::ErrorStatus subMoveGripPointsAt(
 		const AcDbIntArray &indices,
 		const AcGeVector3d &offset);
-	
+	Acad::ErrorStatus subGetOsnapPoints(
+		AcDb::OsnapMode osnapMode,
+		Adesk::GsMarker gsSelectionMark,
+		const AcGePoint3d& pickPoint,
+		const AcGePoint3d& lastPoint,
+		const AcGeMatrix3d& viewXform,
+		AcGePoint3dArray& snapPoints,
+		AcDbIntArray & geomIds
+	) const;
 
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode);

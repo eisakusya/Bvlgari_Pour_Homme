@@ -23,9 +23,12 @@ public:
 	~Gamejig () ;
 
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
-	AcEdJig::DragStatus startJig (GameDrawer *pEntityToJig) ;
+	AcEdJig::DragStatus startJig (GameDrawer *pEntity, std::array<std::array<int, 4>, 4> gridCopy, double curScore , double HisScore) ;
 
 protected:
+	std::array<std::array<int, 4>, 4> initGrid;
+	double m_curScore;
+	double m_hisScore;
 	//- AcEdJig overrides
 	//- input sampler
 	virtual DragStatus sampler () ;
