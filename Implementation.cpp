@@ -23,7 +23,7 @@ void myGame()
 
 	//- Game initialization
 	Game game;
-	std::stack<Game> gameUndo;
+	std::stack<Game> gameUndo;	//used for undo grid
 	bool isUndo = false;
 	if (&game != nullptr) {
 		acutPrintf(_T("\nGame Created!"));
@@ -36,9 +36,6 @@ void myGame()
 	pGameDrawer->close();
 
 	//- game loop
-	/*ACHAR* keyWord = nullptr;
-	acedInitGet(RSG_NONULL, _T("W,w A,a S,s D,d"));
-	auto rc = acedGetKword(_T("\nDecide direction to move [W/A/S/D]: "), keyWord);*/
 	AcString kword;
 	auto rc = acedGetString(0, _T("\nDecide direction to move [W/A/S/D]: "), kword);
 
@@ -87,7 +84,6 @@ void myGame()
 		pGameDrawer->updataScore(game.getScore(), game.getRecordScore());
 		pGameDrawer->close();
 
-		/*acedInitGet(RSG_NONULL, _T("W,w A,a S,s D,d"));*/
 		rc = acedGetString(0, _T("\nDecide direction to move [W/A/S/D]: "), kword);
 	}
 
@@ -98,11 +94,11 @@ void myGame()
 
 void gameJig()
 {
+	//- Jig command
 	Gamejig* pjig = new Gamejig();
 	GameDrawer* pGameDrawer = new GameDrawer();
 
 	
-
 	Game game;
 	std::stack<Game> gameUndo;
 	bool isUndo = false;
@@ -119,9 +115,6 @@ void gameJig()
 	pGameDrawer->close();
 
 	//- game loop
-	/*ACHAR* keyWord = nullptr;
-	acedInitGet(RSG_NONULL, _T("W,w A,a S,s D,d"));
-	auto rc = acedGetKword(_T("\nDecide direction to move [W/A/S/D]: "), keyWord);*/
 	AcString kword;
 	auto rc = acedGetString(0, _T("\nDecide direction to move [W/A/S/D]: "), kword);
 
