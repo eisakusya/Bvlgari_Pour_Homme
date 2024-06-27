@@ -9,7 +9,6 @@
 #include "Implementation.h"
 #include "gamedrawer.h"
 
-
 void initapp()
 {
 	acedRegCmds->addCommand(cmd_group_name, _T("helloworld"), _T("helloworld"), ACRX_CMD_MODAL, helloworld);
@@ -18,6 +17,7 @@ void initapp()
 	acedRegCmds->addCommand(cmd_group_name, _T("2048jig"), _T("2048jig"), ACRX_CMD_MODAL, gameJig);
 
 	GameDrawer::rxInit();
+
 	acrxBuildClassHierarchy();
 }
 

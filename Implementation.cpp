@@ -86,9 +86,11 @@ void myGame()
 
 		rc = acedGetString(0, _T("\nDecide direction to move [W/A/S/D]: "), kword);
 	}
+	
 
 	//- game over
 	acutPrintf(_T("\nGame Over."));
+
 	pBTR->close();
 }
 
