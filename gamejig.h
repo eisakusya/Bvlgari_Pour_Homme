@@ -1,16 +1,10 @@
 #ifndef GAMEJIG_H
 #define GAMEJIG_H
 #pragma once
-<<<<<<< Updated upstream
-class gamedrawer;
-//-----------------------------------------------------------------------------
-class gamejig : public AcEdJig {
-=======
-class Gamedrawer;
+class GameDrawer;
 //-----------------------------------------------------------------------------
 class Gamejig : public AcEdJig {
->>>>>>> Stashed changes
-
+	
 private:
 	//- Member variables
 	//- current input level, increment for each input
@@ -22,27 +16,19 @@ public:
 	//- Array of input points, each level corresponds to the mCurrentInputLevel
 	AcGePoint3dArray mInputPoints ;
 	//- Entity being jigged
-<<<<<<< Updated upstream
-	gamedrawer *mpEntity ;
-
-public:
-	gamejig () ;
-	~gamejig () ;
-
-	//- Command invoke the jig, call passing a new'd instance of the object to jig
-	AcEdJig::DragStatus startJig (gamedrawer *pEntityToJig) ;
-=======
-	Gamedrawer *mpEntity ;
+	GameDrawer *mpEntity ;
 
 public:
 	Gamejig () ;
 	~Gamejig () ;
 
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
-	AcEdJig::DragStatus startJig (Gamedrawer *pEntityToJig) ;
->>>>>>> Stashed changes
+	AcEdJig::DragStatus startJig (GameDrawer *pEntity, std::array<std::array<int, 4>, 4> gridCopy, double curScore , double HisScore) ;
 
 protected:
+	std::array<std::array<int, 4>, 4> initGrid;
+	double m_curScore;
+	double m_hisScore;
 	//- AcEdJig overrides
 	//- input sampler
 	virtual DragStatus sampler () ;

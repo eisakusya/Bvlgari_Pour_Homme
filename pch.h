@@ -36,8 +36,24 @@
 #include <cmath> 
 #include <dbjig.h>
 #include "gamejig.h"
+#include "Block.h"
+#include <vector>
+#include "Implementation.h"
+#include "dbhatch.h"
 
-#define cmd_group_name _T("Game2048")
+#include <set>
+#include <cstdio>
+#include <queue>
+#include <cstdio>
+#include <cstdlib>
+#include <cassert>
+#include <ctime>
+#include <algorithm>
+#include <tuple>
+#include <limits>
+#include <map>
+
+#define cmd_group_name _T("Zrx2048")
 
 
 #endif //PCH_H
