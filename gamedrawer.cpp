@@ -56,6 +56,7 @@ Acad::ErrorStatus GameDrawer::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	//----- Output params
 	//.....
 	pFiler->writeDouble(length);
+	pFiler->writeDouble(m_len);
 	//pFiler->writePoint3d(startPoint);
 	pFiler->writePoint3d(m_center);
 	for (int i = 0; i < gridSize * gridSize; i++) {
@@ -83,6 +84,7 @@ Acad::ErrorStatus GameDrawer::dwgInFields(AcDbDwgFiler * pFiler) {
 	//.....
 	//pFiler->readPoint3d(&startPoint);
 	pFiler->readDouble(&length);
+	pFiler->readDouble(&m_len);
 	pFiler->readPoint3d(&m_center);
 	for (int i = 0; i < gridSize * gridSize; i++) {
 		pFiler->readInt16(&rectangles[i].m_realNum);
@@ -341,7 +343,7 @@ Acad::ErrorStatus GameDrawer::subMoveGripPointsAt(
 Acad::ErrorStatus GameDrawer::subGetOsnapPoints(AcDb::OsnapMode osnapMode, Adesk::GsMarker gsSelectionMark, const AcGePoint3d & pickPoint, const AcGePoint3d & lastPoint, const AcGeMatrix3d & viewXform, AcGePoint3dArray & snapPoints, AcDbIntArray & geomIds) const
 {
 	assertReadEnabled();
-	if (osnapMode == AcDb::kOsModeQuad) {
+	
 		AcGePoint3d start;
 		start.set(m_center.x - length / 2, m_center.y - length / 2, m_center.z);
 		AcGePoint3d pZero, pOne, pTwo, pThree, center;
@@ -357,9 +359,14 @@ Acad::ErrorStatus GameDrawer::subGetOsnapPoints(AcDb::OsnapMode osnapMode, Adesk
 		snapPoints.append(pOne);
 		snapPoints.append(pTwo);
 		snapPoints.append(pThree);
-		
-	}
-	//acutPrintf(_T("Snap points"));
+
+
+		assertReadEnabled();		AcDbCircle*  circle = new AcDbCircle[5];		circle[0].setCenter(m_center);		circle[0].setRadius(length / gridSize / 2);		circle[1].setCenter(pZero);		circle[1].setRadius(length / gridSize / 2);		circle[2].setCenter(pOne);		circle[2].setRadius(length / gridSize / 2);		circle[3].setCenter(pTwo);		circle[3].setRadius(length / gridSize / 2);		circle[4].setCenter(pThree);		circle[4].setRadius(length / gridSize / 2);
+		for (int i = 0; i < 5; i++) {
+
+			circle[i].getOsnapPoints(osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds);
+		}
+	
 	return Acad::eOk;
 }
 
